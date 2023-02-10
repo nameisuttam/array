@@ -1,0 +1,284 @@
+<style>
+</style>
+<?php
+include "connect.php";
+?>
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="style.css">
+    <title>Employee details</title>
+</head>
+
+<body>
+    <?php
+    function test_input($data)
+    {
+        $data = trim($data);
+        $data = stripslashes($data);
+        $data = htmlspecialchars($data);
+        return $data;
+    }
+
+
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        $error = array();
+        $fname = test_input($_POST["fname"]);
+        $lname = test_input($_POST["lname"]);
+        $email = test_input($_POST["email"]);
+        $mobile = test_input($_POST["mobile"]);
+        $address = test_input($_POST["address"]);
+        $gender = test_input($_POST["gender"]);
+        $alldata = test_input($_POST["hobbies"]);
+        $designation = test_input(($_POST["designation"]));
+        $salary = test_input($_POST["salary"]);
+        $city = test_input($_POST["city"]);
+        $state = test_input($_POST["state"]);
+        $joining = test_input($_POST["joining"]);
+        $status = 1;
+
+        if (empty($fname)) {
+            $error[] = "First name is required";
+        } else {
+            if (!preg_match("/^[a-zA-Z-' ]*$/", $fname)) {
+                $error[] = "Only letters and white space allowed";
+            }
+        }
+        if (empty($lname)) {
+            $error[] = "Last name is required";
+        } else {
+            if (!preg_match("/^[a-zA-Z-' ]*$/", $lname)) {
+                $error[] = "Only letters and white space allowed";
+            }
+        }
+        if (empty($email)) {
+            $error[] = "Email id is required";
+        } else {
+            if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                $error[] = "Invalid email format";
+            }
+        }
+        if (empty($mobile)) {
+            $error[] = "Mobile Number is required";
+        } else {
+            if (!preg_match("/^[0-9]{10}+$/", $mobile)) {
+                $error[] = "Invalid Number";
+            }
+        }
+        if (empty($address)) {
+            $error[] = "address is required";
+        }
+        if (empty($gender)) {
+            $error[] = "At least select one";
+        }
+        if (!empty($_POST["hobbie"])) {
+            foreach ($_POST["hobbie"] as $alldata) {
+                // echo $error . '<br>';
+            }
+        } else {
+            $error[] = "Please Select one";
+        }
+        if (empty($designation)) {
+            $error[] = "Designation name is required";
+        }
+        if (empty($salary)) {
+            $error[] = "salary is required";
+        }
+        if (empty($city)) {
+            $error[] = "Please select city";
+        }
+        if (empty($state)) {
+            $error[] = "Please select state";
+        }
+        if (empty($joining)) {
+            $error[] = "Please fill the date";
+        }
+        $count = count($error);
+    }
+    ?>
+    <div class="center">
+        <p>
+            <a class="text2" href="display.php"><b>Display Page</b></a>
+            &nbsp;,&nbsp;&nbsp;&nbsp;
+            <a class="text2" href="search_form.php"><b>Search</b></a>
+            &nbsp;,&nbsp;&nbsp;&nbsp;
+            <a class="text2" href="joins.php"><b>Joins</b></a>
+            &nbsp;,&nbsp;
+            <a class="text2" href="designation.php"><b>*Designation</b></a>
+            &nbsp;,&nbsp;
+            <a class="text2" href="desig_input.php"><b>*Desig_input</b></a>
+            &nbsp;,&nbsp;
+            <a class="text2" href="state.php"><b>*State</b></a>
+            &nbsp;,&nbsp;
+            <a class="text2" href="state_input.php"><b>*State_input</b></a>
+            &nbsp;,&nbsp;
+            <a class="text2" href="city.php"><b>*City</b></a>
+            &nbsp;,&nbsp;
+            <a class="text2" href="city_input.php"><b>*City_input</b></a>
+            &nbsp;,&nbsp;
+            <a class="text2" href="city_update.php"><b>*City_Update</b></a>
+            &nbsp;,&nbsp;
+            <a class="text2" href="city_display.php"><b>*City_Display</b></a>
+            &nbsp;,&nbsp;
+            <a class="text2" href="search_date.php"><b>Serach_Date</b></a>
+            &nbsp;,&nbsp;
+            <a class="text2" href="soft_delete.php"><b>Soft_Delete</b></a>
+        </p>
+        <h2><u class="text2">Employee Details Insert</u></h2>
+        <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
+            <table>
+                <tr>
+                    <td>First Name</td>
+                    <td><input type="text" name="fname"><span class="error">* <?php echo $fname; ?></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Last Name</td>
+                    <td><input type="text" name="lname"><span class="error">* <?php echo $lname; ?></span></td>
+                </tr>
+                <tr>
+                    <td>Email ID</td>
+                    <td><input type="email" name="email"><span class="error">* <?php echo $email; ?></span></td>
+                </tr>
+                <tr>
+                    <td>Mobile</td>
+                    <td><input type="mobile" name="mobile"><span class="error">* <?php echo $mobile; ?></span></td>
+                </tr>
+                <tr>
+                    <td>address</td>
+                    <td><textarea name="address" col="30" rows="4"></textarea><span class="error">* <?php echo $address; ?></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>gender</td>
+                    <td><input type="radio" name="gender" value="male">Male
+                        <input type="radio" name="gender" value="female">Female
+                        <input type="radio" name="gender" value="other">Other
+                        <span class="error">* <?php echo $gender; ?></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Hobbies</td>
+                    <td><input type="checkbox" name="hobbie[]" value="cricket">Cricket
+                        <input type="checkbox" name="hobbie[]" value="football">Football
+                        <input type="checkbox" name="hobbie[]" value="reading">Reading
+                        <input type="checkbox" name="hobbie[]" value="programming">Programming
+                        <span class="error">* <?php echo $alldata; ?></span>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Designation</td>
+                    <?php
+                    $sql_desig = "SELECT * FROM `department`";
+                    ?>
+                    <td>
+                        <select name="designation">
+                            <option selected disabled hidden>select</option>
+                            <?php
+                            $query = mysqli_query($connect, $sql_desig);
+                            while ($row = mysqli_fetch_array($query)) { ?>
+                                <option value="<?php echo $row['id']; ?>"><?php echo $row['designation']; ?></option>
+                            <?php
+                            } ?>
+                        </select>
+                        <span class="error">*</span>
+                    </td>
+
+                </tr>
+                <tr>
+                    <td>Salary</td>
+                    <td><input type="text" name="salary"><span class="error">* <?php echo $salary; ?></span></td>
+                </tr>
+                <tr>
+                    <td>State</td>
+                    <?php
+                    $sql_state = "SELECT * FROM `states`";
+                    ?>
+                    <td>
+                        <select name="state">
+                            <option selected disabled hidden>Select State</option>
+                            <?php
+                            $query = mysqli_query($connect, $sql_state);
+                            while ($row = mysqli_fetch_array($query)) { ?>
+                                <option value="<?php echo $row['id']; ?>"><?php echo $row['state']; ?></option>
+                            <?php
+                            } ?>
+                        </select>
+                        <span class="error">*</span>
+                    </td>
+                </tr>
+                <td>City</td>
+                <?php
+                $sql_city = "SELECT * FROM `cities`";
+                ?>
+                <td>
+                    <select name="city">
+                        <option selected disabled hidden>Select City</option>
+                        <?php
+                        $result = mysqli_query($connect, $sql_city);
+                        while ($row = mysqli_fetch_array($result)) { ?>
+                            <option value="<?php echo $row['id']; ?>"><?php echo $row['city']; ?></option>
+                        <?php
+                        } ?>
+                    </select>
+                    <span class="error">*</span>
+                </td>
+                </tr>
+                <tr>
+                    <td>Joining Date</td>
+                    <td><input type="date" name="joining"><span class="error">*</span></td>
+                </tr>
+            </table>
+            </br><br><br>
+            <input class="button" type="submit" name="btnsubmit" value="Submit">
+            <?php
+            echo "<div class='textE'>";
+
+            if ($count > 0) {
+                foreach ($error as $value) {
+                    echo $value . "<br>";
+                }
+            } else {
+                if (isset($_POST['btnsubmit'])) {
+                    $fname = $_POST['fname'];
+                    $lname = $_POST['lname'];
+                    $email = $_POST['email'];
+                    $mobile = $_POST['mobile'];
+                    $address = $_POST['address'];
+                    $gender = $_POST['gender'];
+                    $alldata = implode(',', $_POST['hobbie']);
+                    $designation = $_POST['designation'];
+                    $sal = $_POST['salary'];
+                    $city = $_POST['city'];
+                    $state = $_POST['state'];
+                    $joining = $_POST['joining'];
+                    $mysqli = "INSERT INTO `emp_data` (`fname`, `lname`, `email`, `mobile`, `address`, `gender`, `hobbies`, `designation`, `salary`,`city`,`state`,`joining`,`status`) VALUES ('$fname', '$lname', '$email', '$mobile', '$address', '$gender', '$alldata', '$designation','$salary','$city','$state','$joining','$status');";
+                    $result = mysqli_query($connect, $mysqli);
+                    if ($result) {
+                        header("location:display.php");
+                    } else {
+                        die(mysqli_error($connect));
+                    }
+                }
+            }
+            echo "</div>";
+            ?>
+        </form>
+    </div>
+
+    <!-- display
+     if (isset($_POST['btndisp'])) {
+         $display = "SELECT * FROM `emp_data`";
+         $result = mysqli_query($connect, $display);
+         if ($result) {
+             header("location:display.php");
+         } else {
+             die(mysqli_error($connect));
+         }
+     } -->
+</body>
+
+</html>
